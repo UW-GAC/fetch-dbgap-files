@@ -121,6 +121,7 @@ if __name__ == "__main__":
     parser.add_argument("--prefetch", help="The path to the prefetch executable.", default="prefetch")
     parser.add_argument("--verbose", help="Print more information.", action="store_true")
     parser.add_argument("--untar", help="Untar any tar archives into a directory with the same basename as the archive.", action="store_true")
+    parser.add_argument("--n-retries", help="The number of times to retry downloading the cart.", type=int, default=3)
 
     # Parse.
     args = parser.parse_args()
@@ -128,7 +129,7 @@ if __name__ == "__main__":
     # Set up the class.
     fetcher = dbGaPFileFetcher(args.ngc, args.prefetch, args.outdir)
     # Download.
-    files_downloaded = fetcher.download_files(args.cart, args.manifest, untar=args.untar)
+    files_downloaded = fetcher.download_files(args.cart, args.manifest, untar=args.untar, n_retries=args.n_retries)
     if not files_downloaded:
         sys.exit(1)
     else:
