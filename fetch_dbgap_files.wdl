@@ -6,6 +6,7 @@ workflow fetch_dbgap_files {
         File manifest_file
         File ngc_file
         String output_directory
+        Int? n_retries=3
         Int? disk_gb
     }
 
@@ -15,7 +16,8 @@ workflow fetch_dbgap_files {
             manifest_file=manifest_file,
             ngc_file=ngc_file,
             output_directory=output_directory,
-            disk_gb=disk_gb
+            disk_gb=disk_gb,
+            n_retries=n_retries
     }
 
     meta {
@@ -33,6 +35,7 @@ task fetch_files {
         File ngc_file
         String output_directory
         Int disk_gb = 50
+        Int n_retries = 3
     }
     command {
         python3 /usr/local/fetch-dbgap-files/fetch.py \
@@ -41,6 +44,7 @@ task fetch_files {
             --cart ~{cart_file} \
             --manifest ~{manifest_file} \
             --outdir tmp_download \
+            --n-retries ~{n_retries} \
             --untar
         gsutil -m cp -r tmp_download/* ~{output_directory}
     }
